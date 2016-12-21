@@ -13,10 +13,11 @@ public class Movement : MonoBehaviour {
      private Transform characterBody;
      private Vector3 currentPosition;
 
-     private float currentSpeedX = 0;
-     private float currentSpeedZ = 0;
+     private float currentSpeedX = 0f;
+     private float currentSpeedZ = 0f;
 
-     private float currentJumpHeight = 0;
+     private float currentJumpHeight = 0f;
+     private float currentRotateFix = 0f;
 
     private Transform currentCamera;
 
@@ -40,8 +41,11 @@ public class Movement : MonoBehaviour {
         if (character.isGrounded) {
             this.getMovingKeys();
 
-            if (currentSpeedZ >= 1f || currentSpeedZ <= -1f || currentSpeedX >= 1f || currentSpeedX <= -1f)
-             characterBody.rotation = Quaternion.Slerp(characterBody.rotation, Quaternion.LookRotation(characterBody.position - currentXZPositionCamera), speedRotating * Time.deltaTime);
+            if (currentSpeedZ >= 1f || currentSpeedZ <= -1f || currentSpeedX >= 1f || currentSpeedX <= -1f) {
+                characterBody.rotation = Quaternion.Slerp(characterBody.rotation, Quaternion.LookRotation(characterBody.position - currentXZPositionCamera), speedRotating * Time.deltaTime);
+
+                //characterBody.Rotate(Vector3.up * currentRotateFix);
+            }
         } else currentJumpHeight += (Physics.gravity).y * gravityMultiply * Time.deltaTime;
     }
 
@@ -60,14 +64,28 @@ public class Movement : MonoBehaviour {
         currentSpeedZ = Input.GetAxis("Vertical") * speedMoving;
 
         if (!Input.GetKey(KeyCode.W)){
-            //currentSpeedZ = 0f;
             currentSpeedZ /= 2f;
         }
-        else if (Input.GetKey(KeyCode.LeftShift)){
+
+
+        if (Input.GetKeyDown(KeyCode.W)){
+            currentRotateFix = 0f;
+        }
+        else if (Input.GetKeyDown(KeyCode.S)){
+            currentRotateFix = 180f;
+        }
+        else if (Input.GetKeyDown(KeyCode.A)){
+            currentRotateFix = 270f;
+        }
+        else if (Input.GetKeyDown(KeyCode.D)){
+            currentRotateFix = 90f;
+        }
+
+        else if (Input.GetKey(KeyCode.LeftShift)){ //running
             currentSpeedX *= 2f;
             currentSpeedZ *= 2f;
         }
-        else if (Input.GetKey(KeyCode.LeftControl)){
+        else if (Input.GetKey(KeyCode.LeftControl)){ //walking
             currentSpeedX *= 0.5f;
             currentSpeedZ *= 0.5f;
         }

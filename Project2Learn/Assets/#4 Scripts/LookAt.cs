@@ -5,7 +5,7 @@ public class LookAt : MonoBehaviour{
 
      public GameObject target = null;
      public Vector2 cameraPosition = new Vector2(1f, 1f);
-     public int speedX = 10, speedY = 5;
+     public int speedX = 10, speedY = 5, scrollSpeed = 5;
 
      private float distance = 4.0f;
      private Vector3 radius, targetCenter;
@@ -13,7 +13,7 @@ public class LookAt : MonoBehaviour{
     void Update(){
         radius.x += Input.GetAxis("Mouse X") * speedX;
         radius.y -= Input.GetAxis("Mouse Y") * speedY;
-        distance -= Input.GetAxis("Mouse ScrollWheel");
+        distance -= Input.GetAxis("Mouse ScrollWheel") * scrollSpeed;
 
        //Ustawienie centrum obiektu w środku XZ i na samej wysokości Y (głowa).
         targetCenter = (target.GetComponent<Renderer>().bounds).center;
@@ -30,5 +30,18 @@ public class LookAt : MonoBehaviour{
 
         transform.position = rotation * direction + target.transform.position;
         transform.rotation = rotation;
+
+
+
+        /*if (Physics.Raycast (target.position, relativePos, hit, distance+0.5)) {
+                Debug.DrawLine(target.position,hit.point);
+                distanceOffset = distance - hit.distance + 0.8; 
+                distanceOffset = Mathf.Clamp(distanceOffset,0,distance);
+            }else{
+                distanceOffset = 0;
+            }
+         */
+
+        //Debug.DrawLine(characterBody.position, currentCamera.position)
     }
 }
